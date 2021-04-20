@@ -85,3 +85,35 @@ FaultMan	F
 FaultMan	F
 FaultMan	F
 FaultMan	F
+Jeff Spare	10
+Jeff Spare	7
+Jeff Spare	3
+Jeff Spare	9
+Jeff Spare	0
+Jeff Spare	10
+Jeff Spare	0
+Jeff Spare	8
+Jeff Spare	8
+Jeff Spare	2
+Jeff Spare	F
+Jeff Spare	6
+Jeff Spare	10
+Jeff Spare	10
+Jeff Spare	8
+Jeff Spare	10
+Jeff Spare	1
+Jeff Strike	10
+Jeff Strike	10
+Jeff Strike	5
+Jeff Strike	3
+Jeff Strike	10
+Jeff Strike	10
+Jeff Strike	8
+Jeff Strike	2
+Jeff Strike	10
+Jeff Strike	8
+Jeff Strike	1
+Jeff Strike	10
+Jeff Strike	8
+Jeff Strike	10
+Jeff Strike	1

@@ -29,18 +29,55 @@ public class Round {
 		full = false;
 		lastRound = (roundNumber == BowlingGame.numberOfRounds);
 	}
+	
+	private String getStringScore(String score) {
+		int currentScore = points.stream().reduce(0, Integer::sum);
+		
+		if (!lastRound) {
+			if (currentScore==BowlingGame.maxShotValue) {
+				// Max score reached in only one shot = Strike!
+				if (points.size()==1) {
+					roundType = RoundType.STRIKE;
+					return BowlingGame.STRIKE;
+				}
+				// Max score reached in MORE than one shot = Spare!
+				else {
+					roundType = RoundType.SPARE;
+					return BowlingGame.SPARE;
+				}
+			}
+		}
+		else {
+			// If every roll was perfect then it's another STRIKE!
+			if (currentScore==(BowlingGame.maxShotValue*points.size())) {
+				roundType = RoundType.STRIKE;
+				return BowlingGame.STRIKE;
+			}
+			else {
+				// TODO CHECK LOGIC
+				if (points.size()==3 && score.equals(""+BowlingGame.maxShotValue)) {
+					roundType = RoundType.STRIKE;
+					return BowlingGame.STRIKE;
+				}
+				if (points.size()==2 && currentScore==BowlingGame.maxShotValue) {
+					roundType = RoundType.SPARE;
+					return BowlingGame.SPARE;
+				}
+			}
+		}
+		
+		return score;
+	}
+	
+	public int getSumOfPoints() {
+		return points.stream().reduce(0, Integer::sum);
+	}
 
 	public void addScore(String score) throws Exception {
 		// TODO CAMBIAR EL LUGAR DEL CÁLCULO
 		int point = 0;
-		// User can send 10 pins down or X for Strikes or / for SPARE
+		// User can send F and represents 0 pins down
 		switch (score) {
-			case BowlingGame.SPARE:
-				point = BowlingGame.maxShotValue;
-				break;
-			case BowlingGame.STRIKE:
-				point = BowlingGame.maxShotValue;
-				break;
 			case BowlingGame.FAULT:
 				point = 0;
 				break;
@@ -48,32 +85,51 @@ public class Round {
 				point = Integer.parseInt(score);
 				break;
 		}
-		
 		if (point>BowlingGame.maxShotValue || point < 0) {
 			throw new Exception ("Score ("+score+") in round "+number+" it's out of range (0-"+BowlingGame.maxShotValue+")");
 		}
+		// Add numeric point to the list
 		points.add(point);
-		finalScore = points.stream().reduce(0, Integer::sum);
-
-		// TODO CHECK SUM FROM PIN FALLS
-/*		if (finalScore>BowlingGame.maxShotValue || finalScore < 0) {
-			throw new Exception ("Final score ("+finalScore+") in round "+this.number+" it's out of range (0-"+BowlingGame.maxShotValue+")");
-		}*/
-
-		if (!lastRound) {
-			if (points.size()==2 && finalScore<BowlingGame.maxShotValue)
-				roundType = RoundType.SIMPLE;
-			if (points.size()==2 && finalScore==BowlingGame.maxShotValue) {
-				roundType = RoundType.SPARE;
-				score = BowlingGame.SPARE;
-			}
-			if (points.size()==1 && finalScore==BowlingGame.maxShotValue) {
-				roundType = RoundType.STRIKE;
+		// Get String representation of this score (number, X, / or F)
+		score = getStringScore(score);
+		
+		// TODO move validations outside
+		int maxShoots = (lastRound ? BowlingGame.maxShotsLastRound : BowlingGame.maxShotsPerRound);
+		final int pointsSize = points.size();
+		if (pointsSize>maxShoots)
+			throw new Exception ("User can't do more than "+maxShoots+" rolls in round "+number);
+		
+		final int maxPointsSize = (pointsSize>2 ? 2 : pointsSize);		
+		finalScore = points.subList(0, pointsSize).stream().reduce(0, Integer::sum);
+		
+		if (lastRound && pointsSize==BowlingGame.maxShotsLastRound) {
+			// It's the last shoot and it's a perfect one!
+			if (point==BowlingGame.maxShotValue) {
 				score = BowlingGame.STRIKE;
 			}
+			full = true;
+		}
+		else {
+			if (pointsSize==BowlingGame.maxShotsPerRound && finalScore<BowlingGame.maxShotValue)
+				roundType = RoundType.SIMPLE;
 			
-			if (roundType!=RoundType.NOT_DEFINED) {
-				full = true;
+			if (pointsSize==BowlingGame.maxShotsPerRound && finalScore==BowlingGame.maxShotValue) {
+				roundType = RoundType.SPARE;
+//				score = BowlingGame.SPARE;
+			}
+			if (pointsSize==1 && finalScore==BowlingGame.maxShotValue) {
+				roundType = RoundType.STRIKE;
+//				score = BowlingGame.STRIKE;
+			}
+
+			if (!lastRound) {
+				// Checks if the number of PINs down are greater thatn the maximum number of pins available
+				if ((roundType==RoundType.NOT_DEFINED && finalScore>BowlingGame.maxShotValue) || finalScore < 0) {
+					throw new Exception ("Final score ("+finalScore+") in round "+this.number+" it's out of range (0-"+BowlingGame.maxShotValue+")");
+				}
+				if (roundType!=RoundType.NOT_DEFINED) {
+					full = true;
+				}
 			}
 		}
 		scores.add(score);
@@ -118,5 +174,8 @@ public class Round {
 		return roundType;
 	}
 
-	
+	public boolean isLastRound() {
+		return lastRound;
+	}
+
 }

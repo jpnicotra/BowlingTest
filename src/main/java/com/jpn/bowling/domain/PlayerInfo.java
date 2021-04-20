@@ -3,6 +3,7 @@ package com.jpn.bowling.domain;
 import java.util.List;
 
 import com.jpn.bowling.domain.Round.RoundType;
+import com.jpn.bowling.game.BowlingGame;
 
 public class PlayerInfo {
 	private final String name;
@@ -55,25 +56,36 @@ public class PlayerInfo {
 			int score = (i == 0 ? 0 : rounds.get(i-1).getAccumulatedScore());
 			if (round.getRoundType()==RoundType.SPARE || round.getRoundType()==RoundType.STRIKE) {
 				if (round.getRoundType()==RoundType.SPARE) {
-					Round addRound = rounds.get(i+1);
-					score+=addRound.getPoints().get(0);
+					if (round.isLastRound()) {
+						score+=round.getPoints().get(round.getPoints().size()-1);
+					}
+					else {
+						Round addRound = rounds.get(i+1);
+						score+=addRound.getPoints().get(0);
+					}
 				}
 				if (round.getRoundType()==RoundType.STRIKE) {
-					// TODO CHECK SIZE
-					// Get score of next round
-					Round addRound = rounds.get(i+1);
-					final List points = addRound.getPoints();
-					java.util.List<Integer> addPoints=points.subList(0, (points.size()>=2 ? 2 : 1));
-					
-					// If this guy is a really PRO and did another Strike, I have to get value from next Round
-					if (addPoints.size()<2 && (i+2)<rounds.size()) {
-						addRound = rounds.get(i+2);
-						addPoints.add(addRound.getPoints().get(0));
+					if (round.isLastRound()) {
+						score+=round.getPoints().get(round.getPoints().size()-1);
 					}
-					
-					// Add all points from next rounds
-					for (Integer addScore : addPoints) {
-						score+=addScore;
+					else {
+	
+						// TODO CHECK SIZE
+						// Get score of next round
+						Round addRound = rounds.get(i+1);
+						final List points = addRound.getPoints();
+						int maxPoints = (addRound.getRoundType()==RoundType.STRIKE? 1 : BowlingGame.maxShotsPerRound );
+						java.util.List<Integer> addPoints=points.subList(0, (points.size()>=maxPoints ? maxPoints : 1));
+						
+						// If this guy is a really PRO and did another Strike, I have to get value from next Round
+						if (addPoints.size()<2 && (i+2)<rounds.size()) {
+							addRound = rounds.get(i+2);
+							addPoints.add(addRound.getPoints().get(0));
+						}
+						// Add all points from next rounds
+						for (Integer addScore : addPoints) {
+							score+=addScore;
+						}
 					}
 				}
 			}

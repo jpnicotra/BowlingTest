@@ -13,6 +13,8 @@ public class BowlingGame {
 	public static final String STRIKE = "X";
 	public static final String SPARE = "/";
 	public static final int maxShotValue = 10;
+	public static final int maxShotsPerRound = 2;
+	public static final int maxShotsLastRound = 3;
 	
 	public BowlingGame() {
 
