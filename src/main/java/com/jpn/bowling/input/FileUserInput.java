@@ -2,6 +2,7 @@ package com.jpn.bowling.input;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
@@ -19,23 +20,17 @@ public class FileUserInput implements UserInput{
 		
 	}
 	
-	public void readFile (String fileName) {
+	public void readFile (String fileName) throws NoSuchFileException, IOException {
         // read file into stream, try-with-resources
 		// TODO CHECK ONLY VALID MOVEMENTS
 		
         try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
-        	/*
-        	rolls = stream.filter(line -> line.contains("\t"))
-                	.map(line -> line.split("\t"))
-                	.map(MapPlayerChanceFunction::mapChance)
-                	.collect(Collectors.groupingBy(PlayerChance::getPlayer,
-        			Collectors.mapping(PlayerChance::getKnockedDownCount, Collectors.toList())));
-        			*/
         	rolls = stream.filter(line -> line.contains("\t"))
                 	.map(line -> line.split("\t"))
                 	 .collect(Collectors.groupingBy(i -> i[0], Collectors.mapping(val -> val[1], Collectors.toList())));
-        } catch (IOException e) {
-            e.printStackTrace();
+        }
+        catch (NoSuchFileException notFound) {
+        	throw notFound; 
         }
 	}
 	

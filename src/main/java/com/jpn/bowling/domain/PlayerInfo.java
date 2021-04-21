@@ -46,49 +46,74 @@ public class PlayerInfo {
 				currentRound = null;
 			}
 		}
+		
+		// TODO Solve error message
+		if (rounds.size()!=BowlingGame.numberOfRounds)
+			errorMessage = "This game doesn't have enough shoots.";
 		if (errorMessage==null)
 			this.calculateScore();
 	}
 	
+	private int calculateSpare(int index, Round round) {
+		int score = 0;
+		
+		if (round.isLastRound()) {
+			score+=round.getPoints().get(round.getPoints().size()-1);
+		}
+		else {
+			Round addRound = rounds.get(index+1);
+			score+=addRound.getPoints().get(0);
+		}
+		
+		return score;
+	}
+	
+	private int calculateStrike(int index, Round round) {
+		int score = 0;
+		
+		if (round.getRoundType()==RoundType.STRIKE) {
+			if (round.isLastRound()) {
+				score+=round.getPoints().get(round.getPoints().size()-1);
+			}
+			else {
+				// TODO CHECK SIZE
+				// Get score of next round
+				Round addRound = rounds.get(index+1);
+				final List points = addRound.getPoints();
+				int maxPoints = (addRound.isLastRound() ? 2 : points.size() );
+				java.util.List<Integer> addPoints=points.subList(0, (points.size()>=maxPoints ? maxPoints : 1));
+				
+				// If this guy is a really PRO and did another Strike, I have to get value from next Round
+				if (addPoints.size()<2 && (index+2)<rounds.size()) {
+					addRound = rounds.get(index+2);
+					addPoints.add(addRound.getPoints().get(0));
+				}
+				// Add all points from next rounds
+				for (Integer addScore : addPoints) {
+					score+=addScore;
+				}
+			}
+		}
+		
+		return score;
+	}
 	private void calculateScore() {
 		for (int i=0;i<rounds.size();i++) {
 			Round round = rounds.get(i);
-			int score = (i == 0 ? 0 : rounds.get(i-1).getAccumulatedScore());
-			if (round.getRoundType()==RoundType.SPARE || round.getRoundType()==RoundType.STRIKE) {
-				if (round.getRoundType()==RoundType.SPARE) {
-					if (round.isLastRound()) {
-						score+=round.getPoints().get(round.getPoints().size()-1);
-					}
-					else {
-						Round addRound = rounds.get(i+1);
-						score+=addRound.getPoints().get(0);
-					}
-				}
-				if (round.getRoundType()==RoundType.STRIKE) {
-					if (round.isLastRound()) {
-						score+=round.getPoints().get(round.getPoints().size()-1);
-					}
-					else {
-	
-						// TODO CHECK SIZE
-						// Get score of next round
-						Round addRound = rounds.get(i+1);
-						final List points = addRound.getPoints();
-						int maxPoints = (addRound.getRoundType()==RoundType.STRIKE? 1 : BowlingGame.maxShotsPerRound );
-						java.util.List<Integer> addPoints=points.subList(0, (points.size()>=maxPoints ? maxPoints : 1));
-						
-						// If this guy is a really PRO and did another Strike, I have to get value from next Round
-						if (addPoints.size()<2 && (i+2)<rounds.size()) {
-							addRound = rounds.get(i+2);
-							addPoints.add(addRound.getPoints().get(0));
-						}
-						// Add all points from next rounds
-						for (Integer addScore : addPoints) {
-							score+=addScore;
-						}
-					}
-				}
+			// Start with score 0 if this is first round
+			int score = 0;
+			if (i>0) {
+				score += rounds.get(i-1).getAccumulatedScore();
 			}
+			
+			if (round.getRoundType()==RoundType.STRIKE) {
+				score += calculateStrike(i, round);
+			}
+			if (round.getRoundType()==RoundType.SPARE) {
+				score += calculateSpare(i, round);
+			}
+			/*
+			 */
 			score+=round.getFinalScore();
 		
 			round.setAccumulatedScore(score);

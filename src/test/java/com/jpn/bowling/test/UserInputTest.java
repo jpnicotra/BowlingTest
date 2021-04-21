@@ -1,6 +1,8 @@
 package com.jpn.bowling.test;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -32,23 +34,29 @@ public class UserInputTest {
 	}
 
 	@Test
-	public void testFileInputValid() {
-		try {
-			input.readFile("data"+File.separator+"sample-moves.txt");
-			
-			PlayerChance chance=input.nextMove();
-			while (chance!=null) {
-				System.out.println (chance.getPlayer()+": "+chance.getKnockedDownCount());
-				
-				Assert.assertNotNull(chance);
-				chance=input.nextMove();
-			}
-			
-		}
-		catch (Exception e) {
-			Assert.fail(e.toString());
-		}
+	public void testFileInputValid() throws NoSuchFileException, IOException  {
+		input.readFile("data"+File.separator+"sample-moves.txt");
 		
+		PlayerChance chance=input.nextMove();
+		while (chance!=null) {
+			System.out.println (chance.getPlayer()+": "+chance.getKnockedDownCount());
+			
+			Assert.assertNotNull(chance);
+			chance=input.nextMove();
+		}
+	}
+
+	@Test(expected = NoSuchFileException.class)
+	public void testFileInputInvalid() throws NoSuchFileException, IOException {
+		input.readFile("data"+File.separator+"doesnt_exist.txt");
+			
+		PlayerChance chance=input.nextMove();
+		while (chance!=null) {
+			System.out.println (chance.getPlayer()+": "+chance.getKnockedDownCount());
+			
+			Assert.assertNotNull(chance);
+			chance=input.nextMove();
+		}		
 	}
 
 	@Configuration

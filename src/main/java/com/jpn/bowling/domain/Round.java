@@ -37,12 +37,12 @@ public class Round {
 			if (currentScore==BowlingGame.maxShotValue) {
 				// Max score reached in only one shot = Strike!
 				if (points.size()==1) {
-					roundType = RoundType.STRIKE;
+//					roundType = RoundType.STRIKE;
 					return BowlingGame.STRIKE;
 				}
 				// Max score reached in MORE than one shot = Spare!
 				else {
-					roundType = RoundType.SPARE;
+					//					roundType = RoundType.SPARE;
 					return BowlingGame.SPARE;
 				}
 			}
@@ -50,17 +50,17 @@ public class Round {
 		else {
 			// If every roll was perfect then it's another STRIKE!
 			if (currentScore==(BowlingGame.maxShotValue*points.size())) {
-				roundType = RoundType.STRIKE;
+				//roundType = RoundType.STRIKE;
 				return BowlingGame.STRIKE;
 			}
 			else {
 				// TODO CHECK LOGIC
 				if (points.size()==3 && score.equals(""+BowlingGame.maxShotValue)) {
-					roundType = RoundType.STRIKE;
+					//roundType = RoundType.STRIKE;
 					return BowlingGame.STRIKE;
 				}
 				if (points.size()==2 && currentScore==BowlingGame.maxShotValue) {
-					roundType = RoundType.SPARE;
+					//roundType = RoundType.SPARE;
 					return BowlingGame.SPARE;
 				}
 			}
@@ -69,8 +69,24 @@ public class Round {
 		return score;
 	}
 	
-	public int getSumOfPoints() {
+	private int getSumOfPoints() {
 		return points.stream().reduce(0, Integer::sum);
+	}
+	
+	private int getScoreFromSimpleRound() throws Exception {
+		int newScore = getSumOfPoints();
+		
+		if (!lastRound && newScore>BowlingGame.maxShotValue) {
+			throw new Exception ("Score "+newScore+" in round "+number+" exceeds maximum allowed value "+BowlingGame.maxShotValue);
+		}
+
+		// Checking if last round has an invalid combination of values
+		if (points.size()==2 && points.get(0)<BowlingGame.maxShotValue && newScore>BowlingGame.maxShotValue) {
+			throw new Exception("Score "+newScore+" in round "+number+" exceeds maximum allowed value "+BowlingGame.maxShotValue);
+		}
+		
+		return newScore;
+
 	}
 
 	public void addScore(String score) throws Exception {
@@ -98,9 +114,32 @@ public class Round {
 		final int pointsSize = points.size();
 		if (pointsSize>maxShoots)
 			throw new Exception ("User can't do more than "+maxShoots+" rolls in round "+number);
+
+		finalScore = getScoreFromSimpleRound();
 		
-		final int maxPointsSize = (pointsSize>2 ? 2 : pointsSize);		
-		finalScore = points.subList(0, pointsSize).stream().reduce(0, Integer::sum);
+		if (!lastRound) {
+			if (pointsSize==1 && finalScore==BowlingGame.maxShotValue) {
+				roundType = RoundType.STRIKE;
+			}
+			if (pointsSize==BowlingGame.maxShotsPerRound && finalScore==BowlingGame.maxShotValue) {
+				roundType = RoundType.SPARE;
+			}
+			if (pointsSize==BowlingGame.maxShotsPerRound && finalScore<BowlingGame.maxShotValue)
+				roundType = RoundType.SIMPLE;
+			
+			if (roundType!=RoundType.NOT_DEFINED) {
+				full = true;
+			}
+		}
+
+		scores.add(score);
+		/*	
+		finalScore = getScoreFromSimpleRound();
+		
+		if (!lastRound && finalScore>BowlingGame.maxShotValue) {
+			throw new Exception ("Score "+finalScore+" in round "+number+" exceeds maximum allowed value "+BowlingGame.maxShotValue);
+		}
+		
 		
 		if (lastRound && pointsSize==BowlingGame.maxShotsLastRound) {
 			// It's the last shoot and it's a perfect one!
@@ -133,6 +172,7 @@ public class Round {
 			}
 		}
 		scores.add(score);
+		*/
 	}
 
 	public boolean isFull() {

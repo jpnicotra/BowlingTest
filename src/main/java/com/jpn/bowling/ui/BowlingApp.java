@@ -9,7 +9,7 @@ import com.jpn.bowling.input.FileUserInput;
 
 public class BowlingApp {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BowlingApp.class);
-
+	
 	public static void main(String[] args) {
 		// Check if user sent at least one file
 	    if (args!=null && args.length <= 0) {
