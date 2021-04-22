@@ -16,6 +16,7 @@ import com.jpn.bowling.exceptions.ScoreExceedsAllowedValueException;
 import com.jpn.bowling.exceptions.ScoreOutOfRangeException;
 import com.jpn.bowling.input.UserInput;
 import com.jpn.games.components.Game;
+import com.jpn.games.components.PlayerInfoFormatter;
 import com.jpn.games.domain.PlayerInfo;
 
 @ActiveProfiles("test")
@@ -27,6 +28,8 @@ class BowlingIntegrationTests {
 	
 	@Autowired
 	private Game bowlingGame;
+	@Autowired
+	private PlayerInfoFormatter playerInfoRequestedFormatter;
 
 	@Test
 	void testAllStrikes() {
@@ -40,8 +43,15 @@ class BowlingIntegrationTests {
 	void testAllFaults() {
 		fileUserInput.readInputs("data/test/all-faults.txt");
 		List<PlayerInfo> players = bowlingGame.newGame(fileUserInput);
-		
+
 		assertEquals(0, players.get(0).getFinalScore());
+
+		final String expectedResult = "Frame		1		2		3		4		5		6		7		8		9		10\r\n"
+				+ "Carl\r\n"
+				+ "Pinfalls	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F\r\n"
+				+ "Score		0		0		0		0		0		0		0		0		0		0\r\n";
+		
+		assertEquals(expectedResult, bowlingGame.formatGame(players, playerInfoRequestedFormatter));
 	}
 
 	@Test
@@ -50,6 +60,12 @@ class BowlingIntegrationTests {
 		List<PlayerInfo> players = bowlingGame.newGame(fileUserInput);
 		
 		assertEquals(0, players.get(0).getFinalScore());
+		final String expectedResult = "Frame		1		2		3		4		5		6		7		8		9		10\r\n"
+				+ "Carl\r\n"
+				+ "Pinfalls	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0\r\n"
+				+ "Score		0		0		0		0		0		0		0		0		0		0\r\n";
+		
+		assertEquals(expectedResult, bowlingGame.formatGame(players, playerInfoRequestedFormatter));
 	}
 
 	@Test

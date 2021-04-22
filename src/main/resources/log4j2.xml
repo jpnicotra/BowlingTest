@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+    <Properties>
+        <Property name="LOG_PATTERN">
+            %d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${hostName} --- [%15.15t] %-40.40c{1.} : %m%n%ex
+        </Property>
+        <Property name="LOG_CLEAN_PATTERN">
+            %m%n%ex
+        </Property>
+    </Properties>
+    <Appenders>
+        <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+        <Console name="ConsoleCleanAppender" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${LOG_CLEAN_PATTERN}"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="com.jpn" level="info" additivity="false">
+            <AppenderRef ref="ConsoleCleanAppender" />
+        </Logger>
+
+        <Root level="info">
+            <AppenderRef ref="ConsoleAppender" />
+        </Root>
+    </Loggers>
+</Configuration>

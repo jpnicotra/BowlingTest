@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import com.jpn.bowling.exceptions.NoSuchFileGameException;
 import com.jpn.bowling.input.UserInput;
 import com.jpn.games.components.Game;
+import com.jpn.games.components.PlayerInfoFormatter;
+import com.jpn.games.domain.PlayerInfo;
 import com.jpn.games.exceptions.GameException;
 
 @Profile("!test")
@@ -23,6 +25,9 @@ public class BowlingCommandLineRunnerApp implements CommandLineRunner {
 	@Autowired
 	private Game bowlingGame;
 	
+	@Autowired
+	private PlayerInfoFormatter playerInfoFormatter;
+	
 	@Override
     public void run(String... args) {
 		// Check if user sent at least one file
@@ -31,10 +36,12 @@ public class BowlingCommandLineRunnerApp implements CommandLineRunner {
 	        System.exit(-1);
 	      }
 
-	    for (String dataFile : args) {
+	    if (args.length>=1) {
+	    	String dataFile = args[0];
 			try {
 				fileUserInput.readInputs(dataFile);
-				bowlingGame.newGame(fileUserInput);
+				java.util.List<PlayerInfo> players = bowlingGame.newGame(fileUserInput);
+				LOGGER.info(playerInfoFormatter.formatPlayersInfo(players));
 			}
 			catch (NoSuchFileGameException nsfe) {
 				LOGGER.error("File '{}' not found. Verify file location and try again", dataFile);
@@ -44,5 +51,7 @@ public class BowlingCommandLineRunnerApp implements CommandLineRunner {
 				e.printStackTrace();
 			}
 	    }
+	    
+	    System.exit(0);
 	}
 }

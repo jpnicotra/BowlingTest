@@ -8,4 +8,5 @@ import com.jpn.games.exceptions.GameException;
 
 public interface Game {
 	public List<PlayerInfo> newGame(UserInput userInput) throws GameException;
+	public String formatGame (List<PlayerInfo> players, PlayerInfoFormatter playerInfoFormatter);
 }
