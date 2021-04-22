@@ -27,15 +27,19 @@ mvn javadoc:javadoc
 ## Execution with output as requested
 
 ```sh
-TODO
 mvn compile exec:java -Dexec.args="data\sample-moves.txt" -Dspring.main.banner-mode=off -Dspring.main.log-startup-info=false
 ```
 
 ## Execution with custom output more human readable
 
 ```sh
-TODO
 mvn compile exec:java -Dexec.args="data\sample-moves.txt PlayerInfoClearFormatter" -Dspring.main.banner-mode=off -Dspring.main.log-startup-info=false
+```
+
+## Execute integration and unit tests
+
+```sh
+mvn test
 ```
 
 ## Features

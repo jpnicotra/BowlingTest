@@ -33,7 +33,7 @@ public class RoundStrikeScoreCalculator implements RoundScoreCalculator {
 				// TODO CHECK SIZE
 				// Get score of next round
 				Round addRound = rounds.get(index + 1);
-				final List points = addRound.getPoints();
+				final List<Integer> points = addRound.getPoints();
 				int maxPoints = (addRound.isLastRound() ? 2 : points.size());
 				java.util.List<Integer> addPoints = points.subList(0, (points.size() >= maxPoints ? maxPoints : 1));
 
