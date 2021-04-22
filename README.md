@@ -6,6 +6,13 @@ BowlingTest requires last version of [Maven](https://maven.apache.org/) to run.
 
 Download code from [this repository](https://github.com/jpnicotra/BowlingTest.git) and start command line in this project directory
 
+```sh
+git clone https://github.com/jpnicotra/BowlingTest.git
+```
+
+```sh
+cd  BowlingTest
+```
 
 Install maven dependencies
 ```sh
