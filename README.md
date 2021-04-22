@@ -17,16 +17,22 @@ Generate Javadoc
 mvn javadoc:javadoc
 ```
 
-## Execution
+## Execution with output as requested
 
 ```sh
 TODO
-mvn compile exec:java -Dexec.args="data\sample-moves.txt"
+mvn compile exec:java -Dexec.args="data\sample-moves.txt" -Dspring.main.banner-mode=off -Dspring.main.log-startup-info=false
+```
+
+## Execution with custom output more human readable
+
+```sh
+TODO
+mvn compile exec:java -Dexec.args="data\sample-moves.txt PlayerInfoClearFormatter" -Dspring.main.banner-mode=off -Dspring.main.log-startup-info=false
 ```
 
 ## Features
 
-TODO
 - User choose between bowling round files (located in data directory)
 - App executes all moves and alert user if some invalid movements where involved
 - App shows final scoreboard
@@ -75,10 +81,10 @@ John	0
 
 BowlingTest uses a number of open source projects to work properly:
 
-- [Spring-Context] - version 5.3.4
-- [Spring-Test] - version 5.3.4
-- [slf4j-api] - version 1.7.30
-- [jUnit] - version 4.13.2
+- [Spring-Boot] - version 2.4.5
+- [Log4j2] - version 2.13
+- [slf4j-api] - version 2.13
+- [junit-jupiter] - version 5.7.1
 - [JDK] - version 1.8
 
 ## Plugins
