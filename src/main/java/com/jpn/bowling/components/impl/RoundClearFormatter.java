@@ -7,14 +7,31 @@ import org.springframework.stereotype.Component;
 import com.jpn.bowling.components.RoundInfoFormatter;
 import com.jpn.bowling.domain.Round;
 
+/**
+ * Implementation of interface RoundInfoFormatter with a human readable style of
+ * a Round
+ * 
+ * @see Round
+ * @author jnicotra
+ */
 @Component
 public class RoundClearFormatter implements RoundInfoFormatter {
 
+	/**
+	 * Implementation of interface RoundInfoFormatter with a human readable style of
+	 * a Round
+	 * 
+	 * @param round The round you want to represent
+	 * @return string representation of a Round
+	 * @see Round
+	 */
 	public String formatRoundInfo(Round round) {
+		StringBuffer sb = new StringBuffer();
 		final List<String> scores = round.getScores();
-		if (scores.size()>0)
-			return scores.stream().reduce((s,v) -> s+=" "+v).get();
+		for (String score : scores) {
+			sb.append(score + " ");
+		}
 
-		return "";
+		return "\t" + sb.toString().trim();
 	}
 }

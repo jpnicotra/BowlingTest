@@ -2,16 +2,33 @@ package com.jpn.games.domain;
 
 import java.util.List;
 
-import com.jpn.bowling.domain.Round;
+/**
+ * Generic information for a game player
+ * 
+ * @author jnicotra
+ */
+public abstract class PlayerInfo {
+	private String playerName;
+	private String errorMessage;
 
-public abstract interface PlayerInfo {
-	
-	public String getPlayerName();
-	public java.util.List<Round> getRounds();
-	public void setRounds(java.util.List<Round> round);
-	public String getErrorMessage();
-	public String setErrorMessage(String error);
-	public List<String> getScores();
-	public int getFinalScore();
+	public PlayerInfo(String name) {
+		this.playerName = name;
+	}
+
+	public String getPlayerName() {
+		return playerName;
+	}
+
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	public String setErrorMessage(String error) {
+		return this.errorMessage = error;
+	}
+
+	public abstract List<String> getScores();
+
+	public abstract int getFinalScore();
 
 }

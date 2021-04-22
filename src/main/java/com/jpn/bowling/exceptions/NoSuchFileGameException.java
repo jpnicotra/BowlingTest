@@ -6,7 +6,7 @@ import com.jpn.games.exceptions.GameException;
 
 public class NoSuchFileGameException extends GameException {
 
-	public NoSuchFileGameException (NoSuchFileException fileException) {
+	public NoSuchFileGameException(NoSuchFileException fileException) {
 		super(fileException.toString());
 	}
 }

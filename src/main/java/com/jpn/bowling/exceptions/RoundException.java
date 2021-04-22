@@ -5,8 +5,8 @@ import com.jpn.games.exceptions.GameException;
 
 public class RoundException extends GameException {
 	private Round round;
-	
-	public RoundException (Round round, String message) {
+
+	public RoundException(Round round, String message) {
 		super(message);
 		this.round = round;
 	}

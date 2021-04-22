@@ -11,26 +11,40 @@ import com.jpn.bowling.components.impl.PlayerInfoClearFormatter;
 import com.jpn.bowling.components.impl.PlayerInfoRequestedFormatter;
 import com.jpn.games.components.PlayerInfoFormatter;
 
+/**
+ * SpringBootApplication that works as the main class and also as to do some
+ * configuration about the kind of ouptut format will the user choose
+ * 
+ * @author jnicotra
+ */
 @SpringBootApplication
 public class BowlingApp {
 	private static final Logger LOGGER = LogManager.getLogger(BowlingApp.class);
-	private static String formatter="";
-	
+	private static String formatter = "";
+
 	public static void main(String[] args) {
-		if (args.length>=2)
+		if (args.length >= 2)
 			BowlingApp.formatter = args[1];
 		SpringApplication app = new SpringApplication(BowlingApp.class);
-		//app.setBannerMode(Banner.Mode.OFF);
-		//app.setLogStartupInfo(false);
 		app.run(args);
-		
+
 	}
 
-    @Bean
-    public PlayerInfoFormatter getPlayerInfoFormatter() {
-    	switch (BowlingApp.formatter) {
-	    	case "PlayerInfoClearFormatter": return new PlayerInfoClearFormatter();
-	    	default: return new PlayerInfoRequestedFormatter();
-    	}
-    }
+	/**
+	 * Decides which of the String formatters to use
+	 * 
+	 * @return PlayerInfoFormatter
+	 * @see PlayerInfoFormatter
+	 * @see PlayerInfoClearFormatter
+	 * @see PlayerInfoRequestedFormatter
+	 */
+	@Bean
+	public PlayerInfoFormatter getPlayerInfoFormatter() {
+		switch (BowlingApp.formatter) {
+		case "PlayerInfoClearFormatter":
+			return new PlayerInfoClearFormatter();
+		default:
+			return new PlayerInfoRequestedFormatter();
+		}
+	}
 }
