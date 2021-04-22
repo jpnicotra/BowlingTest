@@ -1,13 +1,21 @@
-package com.jpn.bowling.game;
+package com.jpn.bowling.components.impl;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import com.jpn.bowling.domain.PlayerInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.jpn.bowling.components.RollsTransformer;
+import com.jpn.bowling.components.RoundsBuilder;
+import com.jpn.bowling.exceptions.NoMovesException;
 import com.jpn.bowling.input.UserInput;
+import com.jpn.games.components.Game;
+import com.jpn.games.domain.PlayerInfo;
+import com.jpn.games.exceptions.GameException;
 
-public class BowlingGame {
+@Component
+public class BowlingGame implements Game {
 	public static final int numberOfRounds=10;
 	public static final String FAULT = "F";
 	public static final String STRIKE = "X";
@@ -16,19 +24,18 @@ public class BowlingGame {
 	public static final int maxShotsPerRound = 2;
 	public static final int maxShotsLastRound = 3;
 	
+	@Autowired
+	private RollsTransformer rollsToPlayerInfoTransformer;
+	
 	public BowlingGame() {
-
 	}
 
-	public void newGame(UserInput userInput) throws Exception {
-		// TODO CHANGE EXCEPTION
+	public List<PlayerInfo> newGame(UserInput userInput) throws GameException {
 		if (userInput == null)
-			throw new Exception("NO MOVES");
+			throw new NoMovesException();
+		// Get all rolls send by the user
 		final Map<String, List<String>> rolls = userInput.getRolls();
-		final List<PlayerInfo> players = rolls.entrySet().stream().map(e -> new PlayerInfo(e.getKey(), e.getValue()))
-				.collect(Collectors.toList());
-
-		players.stream().forEach(player -> player.buildRounds());
+		final List<PlayerInfo> players = rollsToPlayerInfoTransformer.transformRollsToPlayerInfo(rolls);
 		
 		String strRounds = "";
 		for (int i=1;i<=numberOfRounds;i++)
@@ -37,7 +44,7 @@ public class BowlingGame {
 		for (int i=0;i<players.size();i++) {
 			PlayerInfo player = players.get(i);
 			System.out.println("Round\t"+stringRounds);
-			System.out.println(player.getName());
+			System.out.println(player.getPlayerName());
 			if (player.getErrorMessage()!=null) {
 				System.out.println("Exception found! "+player.getErrorMessage());
 			}
@@ -50,5 +57,6 @@ public class BowlingGame {
 			}
 			System.out.println("---------------------------------------------------------------------------------------------------------------------------");
 		}
+		return players;
 	}
 }

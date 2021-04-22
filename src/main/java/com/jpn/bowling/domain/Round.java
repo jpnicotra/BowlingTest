@@ -3,7 +3,11 @@ package com.jpn.bowling.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jpn.bowling.game.BowlingGame;
+import com.jpn.bowling.components.impl.BowlingGame;
+import com.jpn.bowling.exceptions.ExceedMaximumNumberOfRollsException;
+import com.jpn.bowling.exceptions.ScoreExceedsAllowedValueException;
+import com.jpn.bowling.exceptions.ScoreOutOfRangeException;
+import com.jpn.games.exceptions.GameException;
 
 public class Round {
 	public enum RoundType {
@@ -73,23 +77,23 @@ public class Round {
 		return points.stream().reduce(0, Integer::sum);
 	}
 	
-	private int getScoreFromSimpleRound() throws Exception {
+	private int getScoreFromSimpleRound() throws GameException {
 		int newScore = getSumOfPoints();
 		
 		if (!lastRound && newScore>BowlingGame.maxShotValue) {
-			throw new Exception ("Score "+newScore+" in round "+number+" exceeds maximum allowed value "+BowlingGame.maxShotValue);
+			throw new ScoreExceedsAllowedValueException (this, "Score "+newScore+" in round "+number+" exceeds maximum allowed value "+BowlingGame.maxShotValue);
 		}
 
 		// Checking if last round has an invalid combination of values
 		if (points.size()==2 && points.get(0)<BowlingGame.maxShotValue && newScore>BowlingGame.maxShotValue) {
-			throw new Exception("Score "+newScore+" in round "+number+" exceeds maximum allowed value "+BowlingGame.maxShotValue);
+			throw new ScoreExceedsAllowedValueException (this, "Score "+newScore+" in round "+number+" exceeds maximum allowed value "+BowlingGame.maxShotValue);
 		}
 		
 		return newScore;
 
 	}
 
-	public void addScore(String score) throws Exception {
+	public void addScore(String score) throws GameException {
 		// TODO CAMBIAR EL LUGAR DEL CÁLCULO
 		int point = 0;
 		// User can send F and represents 0 pins down
@@ -102,7 +106,7 @@ public class Round {
 				break;
 		}
 		if (point>BowlingGame.maxShotValue || point < 0) {
-			throw new Exception ("Score ("+score+") in round "+number+" it's out of range (0-"+BowlingGame.maxShotValue+")");
+			throw new ScoreOutOfRangeException(this, score);
 		}
 		// Add numeric point to the list
 		points.add(point);
@@ -113,7 +117,7 @@ public class Round {
 		int maxShoots = (lastRound ? BowlingGame.maxShotsLastRound : BowlingGame.maxShotsPerRound);
 		final int pointsSize = points.size();
 		if (pointsSize>maxShoots)
-			throw new Exception ("User can't do more than "+maxShoots+" rolls in round "+number);
+			throw new ExceedMaximumNumberOfRollsException (this, "User can't do more than "+maxShoots+" rolls in round "+number);
 
 		finalScore = getScoreFromSimpleRound();
 		
@@ -133,46 +137,6 @@ public class Round {
 		}
 
 		scores.add(score);
-		/*	
-		finalScore = getScoreFromSimpleRound();
-		
-		if (!lastRound && finalScore>BowlingGame.maxShotValue) {
-			throw new Exception ("Score "+finalScore+" in round "+number+" exceeds maximum allowed value "+BowlingGame.maxShotValue);
-		}
-		
-		
-		if (lastRound && pointsSize==BowlingGame.maxShotsLastRound) {
-			// It's the last shoot and it's a perfect one!
-			if (point==BowlingGame.maxShotValue) {
-				score = BowlingGame.STRIKE;
-			}
-			full = true;
-		}
-		else {
-			if (pointsSize==BowlingGame.maxShotsPerRound && finalScore<BowlingGame.maxShotValue)
-				roundType = RoundType.SIMPLE;
-			
-			if (pointsSize==BowlingGame.maxShotsPerRound && finalScore==BowlingGame.maxShotValue) {
-				roundType = RoundType.SPARE;
-//				score = BowlingGame.SPARE;
-			}
-			if (pointsSize==1 && finalScore==BowlingGame.maxShotValue) {
-				roundType = RoundType.STRIKE;
-//				score = BowlingGame.STRIKE;
-			}
-
-			if (!lastRound) {
-				// Checks if the number of PINs down are greater thatn the maximum number of pins available
-				if ((roundType==RoundType.NOT_DEFINED && finalScore>BowlingGame.maxShotValue) || finalScore < 0) {
-					throw new Exception ("Final score ("+finalScore+") in round "+this.number+" it's out of range (0-"+BowlingGame.maxShotValue+")");
-				}
-				if (roundType!=RoundType.NOT_DEFINED) {
-					full = true;
-				}
-			}
-		}
-		scores.add(score);
-		*/
 	}
 
 	public boolean isFull() {

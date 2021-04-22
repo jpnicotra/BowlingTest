@@ -9,8 +9,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.jpn.bowling.domain.PlayerChance;
+import org.springframework.stereotype.Component;
 
+import com.jpn.bowling.domain.PlayerChance;
+import com.jpn.bowling.exceptions.IoGameException;
+import com.jpn.bowling.exceptions.NoSuchFileGameException;
+import com.jpn.games.exceptions.GameException;
+
+@Component
 public class FileUserInput implements UserInput{
 	private List<PlayerChance> moves = null;
 	private Map<String, List<String>> rolls;
@@ -19,8 +25,8 @@ public class FileUserInput implements UserInput{
 	public FileUserInput () {
 		
 	}
-	
-	public void readFile (String fileName) throws NoSuchFileException, IOException {
+
+	public void readInputs (String fileName) throws GameException {
         // read file into stream, try-with-resources
 		// TODO CHECK ONLY VALID MOVEMENTS
 		
@@ -30,22 +36,16 @@ public class FileUserInput implements UserInput{
                 	 .collect(Collectors.groupingBy(i -> i[0], Collectors.mapping(val -> val[1], Collectors.toList())));
         }
         catch (NoSuchFileException notFound) {
-        	throw notFound; 
+        	throw new NoSuchFileGameException (notFound); 
+        }
+        catch (IOException ioException) {
+        	throw new IoGameException (ioException); 
         }
 	}
 	
 
 	public Map<String, List<String>> getRolls() {
 		return rolls;
-	}
-
-	public PlayerChance nextMove() {
-		if (moves==null || currentMove>=moves.size())
-			return null;
-		
-		PlayerChance nextMove = moves.get(currentMove);
-		currentMove+=1;
-		return nextMove;
 	}
 
 }

@@ -21,7 +21,7 @@ mvn javadoc:javadoc
 
 ```sh
 TODO
-mvn compile exec:java
+mvn compile exec:java -Dexec.args="data\sample-moves.txt"
 ```
 
 ## Features
