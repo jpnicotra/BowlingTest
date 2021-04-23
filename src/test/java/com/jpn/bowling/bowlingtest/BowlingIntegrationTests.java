@@ -119,6 +119,11 @@ class BowlingIntegrationTests {
 		fileUserInput.readInputs("data/test/ScoreOutOfRangeException.txt");
 		assertThrows(ScoreOutOfRangeException.class, () -> bowlingGame.newGame(fileUserInput));
 	}
+	@Test
+	void testScoreUnderZeroException() {
+		fileUserInput.readInputs("data/test/values_under_zero.txt");
+		assertThrows(ScoreOutOfRangeException.class, () -> bowlingGame.newGame(fileUserInput));
+	}
 
 	@Test
 	void testScoreExceedsAllowedValueException() {

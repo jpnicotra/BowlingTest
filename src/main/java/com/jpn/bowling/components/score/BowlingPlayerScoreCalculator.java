@@ -47,6 +47,7 @@ public class BowlingPlayerScoreCalculator implements PlayerScoreCalculator {
 			final List<Round> rounds = player.getRounds();
 			final int index = round.getNumber() - 1;
 
+			// gets sum score until this round
 			if (index > 0) {
 				score += roundSimpleScoreCalculator.calculate(rounds, index, round);
 			}
@@ -57,6 +58,7 @@ public class BowlingPlayerScoreCalculator implements PlayerScoreCalculator {
 			if (round.getRoundType() == RoundType.SPARE) {
 				score += roundSpareScoreCalculator.calculate(rounds, index, round);
 			}
+			
 			score += round.getFinalScore();
 		}
 

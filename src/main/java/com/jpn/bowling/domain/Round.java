@@ -144,6 +144,13 @@ public class Round extends GenericRound {
 				full = true;
 			}
 		}
+		
+		if (lastRound && pointsSize == BowlingGame.maxShotsLastRound) {
+			if (getScores().get(1)!= BowlingGame.STRIKE && getScores().get(1)!= BowlingGame.SPARE) {
+				if (point==BowlingGame.maxShotValue)
+					throw new ScoreExceedsAllowedValueException(this, score);
+			}
+		}
 
 		getScores().add(score);
 	}
