@@ -26,11 +26,11 @@ public class PlayerInfoRequestedFormatter extends BowlingPlayerInfoFormatter {
 	public String formatPlayersInfo(List<PlayerInfo> players) {
 		final String enter = "\r\n";
 		final String stringRounds = getFramesHeader("\t\t");
-
 		StringBuffer sb = new StringBuffer();
+		sb.append("Frame" + stringRounds + enter);
+
 		players.stream().filter(player -> player instanceof BowlingPlayerInfo).forEach(genericPlayer -> {
 			BowlingPlayerInfo player = (BowlingPlayerInfo) genericPlayer;
-			sb.append("Frame" + stringRounds + enter);
 			sb.append(player.getPlayerName() + enter);
 			if (player.getErrorMessage() != null) {
 				sb.append("Exception found! " + player.getErrorMessage() + enter);
