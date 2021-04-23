@@ -1,4 +1,10 @@
+com.jpn.bowling
+com.jpn.bowling.components
+com.jpn.bowling.components.impl
+com.jpn.bowling.components.score
 com.jpn.bowling.domain
-com.jpn.bowling.game
+com.jpn.bowling.exceptions
 com.jpn.bowling.input
-com.jpn.bowling.ui
+com.jpn.games.components
+com.jpn.games.domain
+com.jpn.games.exceptions
