@@ -58,7 +58,7 @@ public class BowlingPlayerScoreCalculator implements PlayerScoreCalculator {
 			if (round.getRoundType() == RoundType.SPARE) {
 				score += roundSpareScoreCalculator.calculate(rounds, index, round);
 			}
-			
+
 			score += round.getFinalScore();
 		}
 

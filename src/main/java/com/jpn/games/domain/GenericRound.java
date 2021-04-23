@@ -3,8 +3,6 @@ package com.jpn.games.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jpn.games.exceptions.GameException;
-
 /**
  * Represents a specific Round in a game
  * 
@@ -18,8 +16,6 @@ public abstract class GenericRound {
 		this.number = roundNumber;
 		scores = new ArrayList<String>();
 	}
-
-	public abstract void addScore(String score) throws GameException;
 
 	public abstract boolean isFull();
 
