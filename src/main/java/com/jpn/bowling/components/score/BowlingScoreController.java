@@ -8,6 +8,7 @@ import com.jpn.bowling.components.impl.BowlingGame;
 import com.jpn.bowling.domain.Round;
 import com.jpn.bowling.domain.RoundType;
 import com.jpn.bowling.exceptions.ExceedMaximumNumberOfRollsException;
+import com.jpn.bowling.exceptions.InvalidScoreException;
 import com.jpn.bowling.exceptions.ScoreExceedsAllowedValueException;
 import com.jpn.bowling.exceptions.ScoreOutOfRangeException;
 import com.jpn.games.exceptions.GameException;
@@ -73,7 +74,12 @@ public class BowlingScoreController implements ScoreController {
 			point = 0;
 			break;
 		default:
-			point = Integer.parseInt(score);
+			try {
+				point = Integer.parseInt(score);
+			}
+			catch (Exception e) {
+				throw new InvalidScoreException(round, score);
+			}
 			break;
 		}
 		if (point > BowlingGame.maxShotValue || point < 0) {
