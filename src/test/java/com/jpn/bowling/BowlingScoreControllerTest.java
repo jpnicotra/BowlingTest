@@ -18,8 +18,8 @@ import com.jpn.bowling.exceptions.ScoreOutOfRangeException;
 
 @ActiveProfiles("test")
 @SpringBootTest()
-public class BowlingScoreController {
-	private static final Logger LOGGER = LogManager.getLogger(BowlingScoreController.class);
+public class BowlingScoreControllerTest {
+	private static final Logger LOGGER = LogManager.getLogger(BowlingScoreControllerTest.class);
 
 
 	@Autowired
